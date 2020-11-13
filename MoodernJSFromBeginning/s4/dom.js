@@ -3,6 +3,7 @@ const taskList = document.querySelector(".collection");
 const clearBtn = document.querySelector(".clear-tasks");
 const filter = document.querySelector("#filter");
 const taskInput = document.querySelector("#task");
+const itemsKey = "tasks";
 
 localEventListeners();
 
@@ -11,6 +12,44 @@ function localEventListeners() {
   taskList.addEventListener("mouseup", deleteTask);
   filter.addEventListener("keyup", filterTask);
   clearBtn.addEventListener("click", clearTasks);
+
+  // after dom is loaded, prepare the collection using local storage
+  document.addEventListener(
+    "DOMContentLoaded",
+    appendLocalStorageTasksToCollection
+  );
+  // appendLocalStorageTasksToCollection();
+}
+
+// localstroge - when page is loaded, read from localstroage and constuct the collection
+function appendLocalStorageTasksToCollection() {
+  JSON.parse(localStorage.getItem(itemsKey)).forEach(
+    (taskText) => taskList.appendChild(createLi2(taskText)) // Li2 here.. why
+  );
+}
+
+// localstroge - save collection-item in localstorage
+function saveTaskInLocalStroage(task) {
+  let currentTasks;
+  if (localStorage.getItem(itemsKey) === null) {
+    currentTasks = [];
+  } else {
+    currentTasks = JSON.parse(localStorage.getItem(itemsKey));
+  }
+  currentTasks.push(task);
+  localStorage.setItem(itemsKey, JSON.stringify(currentTasks));
+}
+
+// localstroge - remove collecrtion-item from localstroage
+function removeTasksFromLocalstroage(task) {
+  let currentTasks = JSON.parse(localStorage.getItem(itemsKey));
+  currentTasks.splice(currentTasks.indexOf(task), 1);
+  localStorage.setItem(itemsKey, JSON.stringify(currentTasks));
+}
+
+//localstroge - clear all items in the localstroage
+function clearAllTasksInLocalStorage() {
+  localStorage.removeItem(itemsKey);
 }
 
 // clear the collection
@@ -22,6 +61,7 @@ function clearTasks(e) {
   while (taskList.firstChild) {
     taskList.removeChild(taskList.firstChild);
   }
+  clearAllTasksInLocalStorage();
 
   e.preventDefault();
 }
@@ -51,6 +91,8 @@ function deleteTask(e) {
   console.log(this); // the collection itself
   if (e.target.className === "fa fa-remove") {
     e.target.parentElement.parentElement.remove();
+    // remove li node's text from local storage
+    removeTasksFromLocalstroage(e.target.parentElement.parentElement.innerText);
   }
   e.preventDefault();
 }
@@ -62,10 +104,25 @@ function addTask(e) {
   } else {
     const liItem = createLi();
     taskList.appendChild(liItem);
+
+    // persist in local storage
+    saveTaskInLocalStroage(taskInput.value);
+
     taskInput.value = "";
   }
 
   e.preventDefault();
+}
+function createLi2(taskText) {
+  const li = document.createElement("li");
+  li.className = "collection-item";
+  const testNode = document.createTextNode(taskText);
+  const link = createItemDeletionLink();
+
+  li.appendChild(testNode);
+  li.appendChild(link);
+
+  return li;
 }
 
 function createLi() {
