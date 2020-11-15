@@ -1,6 +1,7 @@
 let min = 1;
 let max = 10;
 let win = 4;
+let guessesLeft = 3;
 
 // set min and max in UI
 document.querySelector(".min-num").textContent = min;
@@ -15,16 +16,24 @@ submitBtn.addEventListener("click", function () {
 
   // validate input
   if (isNaN(guess) || guess < min || guess > max) {
-    input.style.borderColor = "red";
-    message.style.color = "red";
-    message.textContent = "Invalid input";
+    setStatus(false, "red", "red", `Invalid input`);
   } else if (guess === win) {
-    input.style.borderColor = "green";
-    message.style.color = "green";
-    message.textContent = "Well done";
+    setStatus(true, "green", "green", `Well done`);
   } else {
-    input.style.borderColor = "grey";
-    message.style.color = "black";
-    message.textContent = "";
+    guessesLeft -= 1;
+    if (guessesLeft === 0) {
+      submitBtn.disabled = true;
+      setStatus(true, "red", "red", `Game Over: was ${win}`);
+    } else {
+      input.value = "";
+      setStatus(false, "red", "red", `Time Left: ${guessesLeft}`);
+    }
   }
 });
+
+function setStatus(inputStatus, inputBorder, msgColor, messageText) {
+  input.disabled = inputStatus;
+  input.style.borderColor = inputBorder;
+  message.style.color = msgColor;
+  message.textContent = messageText;
+}
