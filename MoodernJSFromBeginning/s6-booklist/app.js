@@ -26,6 +26,10 @@ UI.prototype.clearInput = function(params) {
 	document.getElementById('isbn').value = '';
 }
 
+UI.prototype.deteleBook = function(target) {
+	target.parentElement.parentElement.remove();
+}
+
 // method to add the message div before the form
 UI.prototype.setAlertDiv = function(msg, cn) {
 	const messageDiv = document.createElement('div');
@@ -66,3 +70,14 @@ document.getElementById('book-form').addEventListener('submit',
 
 	e.preventDefault();
 });
+
+// Event delegation on auto generated elements.
+document.getElementById('book-list').addEventListener('click', function(e) {
+	if (e.target.className === 'delete') {
+		const ui = new UI();
+		ui.deteleBook(e.target); // ***
+		ui.setAlertDiv("Deleted", 'success');
+	}
+	
+	e.preventDefault();
+})
