@@ -38,3 +38,12 @@ console.log(...data);
 // spread operator (...) is used to spread properties of an object
 // here all the oldObject's properteis will be copied into the newObject
 const newObject = {...oldObject, newProp:5}
+
+
+const filter = (...args) => {
+  return args.filter(el => el ===1);
+}
+console.log(filter(1,2,3));
+
+
+
