@@ -1,5 +1,6 @@
 // spread operator (...) is used to spread arrays - [ 'apple', 'banana' ] to apple banana
 // spread operator (...) is used to combine arrays
+// spread operator (...) is used to spread properties of an object
 
 
 // Spread a simple array:
@@ -33,3 +34,7 @@ const data = [
 
 console.log(data);
 console.log(...data);
+
+// spread operator (...) is used to spread properties of an object
+// here all the oldObject's properteis will be copied into the newObject
+const newObject = {...oldObject, newProp:5}
